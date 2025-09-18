@@ -1,7 +1,7 @@
 My groupmembers are:
 - Kevin Argueta
 - Nathan Harris
-- XXXX
+- Kamarre Hicks
 - XXXX
 
 
