@@ -1,6 +1,6 @@
 My groupmembers are:
 - Kevin Argueta
-- XXXX
+- Nathan Harris
 - XXXX
 - XXXX
 
