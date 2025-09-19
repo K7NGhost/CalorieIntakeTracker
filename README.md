@@ -2,6 +2,7 @@ My groupmembers are:
 - Kevin Argueta
 - Nathan Harris
 - Kamarre Hicks
+- Mahmoud El Hajj
 - XXXX
 
 
