@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Logging.AddDebug();
 
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -22,6 +23,17 @@ var supabaseKey = builder.Configuration["Supabase:Key"] ?? throw new InvalidOper
 var supabaseValidIssuer = builder.Configuration["Supabase:ValidIssuer"] ?? throw new InvalidOperationException("Supabase URL not configured");
 var supabaseAudience = builder.Configuration["Supabase:ValidAudience"] ?? throw new InvalidOperationException("Supabase key not configured");
 var supabaseJwtSecret = builder.Configuration["Authentication:JwtSecret"] ?? throw new InvalidOperationException("Supabase JWT Secret not configured");
+var apiKey = builder.Configuration["OpenAI:Key"] ?? throw new InvalidOperationException("OpenAI key not configured");
+var openAIModel = builder.Configuration["OpenAI:Model"] ?? throw new InvalidOperationException("OpenAI model not configured");
+
+builder.Services.AddOpenAi(settings =>
+{
+    settings.ApiKey = apiKey;
+    settings.DefaultRequestConfiguration.Chat = chatClient =>
+    {
+        chatClient.WithModel(openAIModel);
+    };
+});
 
 // Add JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
