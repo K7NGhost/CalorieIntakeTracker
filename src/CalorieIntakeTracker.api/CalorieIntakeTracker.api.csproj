@@ -4,21 +4,32 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>d6e93105-4f86-4073-a4ba-3dda111b57f5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0-rc.1.25451.107" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0-rc.1.25451.107" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0-rc.1.25451.107">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0-rc.1.25451.107">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.1" />
+    <PackageReference Include="OpenAI" Version="2.5.0" />
+    <PackageReference Include="Rystem.OpenAi" Version="4.2.24" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.8.11" />
     <PackageReference Include="Supabase" Version="1.1.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Dtos\" />
-    <Folder Include="Mappers\" />
-    <Folder Include="Models\" />
+    <Folder Include="Models\Notification\" />
   </ItemGroup>
 
 </Project>
