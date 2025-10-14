@@ -9,7 +9,7 @@ import axios from "axios";
 type UserContextType = {
   user: UserProfile | null;
   token: string | null;
-  registerUser: (email: string, username: string, password: string) => void;
+  registerUser: (email: string, password: string) => void;
   loginUser: (username: string, password: string) => void;
   logout: () => void;
   isLoggedIn: () => boolean;
@@ -48,7 +48,7 @@ export const UserProvider = ({ children }: Props) => {
           setToken(res?.data.token!);
           setUser(userObj!);
           toast.success("Login Success!");
-          navigate("/search");
+          navigate("/dashboard");
         }
       })
       .catch((e) => toast.warning("Server error occured"));
@@ -66,7 +66,7 @@ export const UserProvider = ({ children }: Props) => {
           setToken(res?.data.token!);
           setUser(userObj!);
           toast.success("Login Success!");
-          navigate("/search");
+          navigate("/dashboard");
         }
       })
       .catch((e) => toast.warning("Server error occured"));

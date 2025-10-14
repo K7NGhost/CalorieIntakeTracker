@@ -2,10 +2,29 @@ import { motion } from "framer-motion";
 import { Flame } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
+import * as Yup from "yup";
+import { useAuth } from "../../Context/useAuth";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 
 type Props = {};
 
+type LoginFormsInputs = {
+  email: string;
+  password: string;
+}
+
+const validation = Yup.object().shape({
+  email: Yup.string().required("Email is required"),
+  password: Yup.string().required("Password is required")
+});
+
 const LoginPage = (props: Props) => {
+  const {loginUser} = useAuth();
+  const {register, handleSubmit, formState: {errors}} = useForm<LoginFormsInputs>({resolver: yupResolver(validation)});
+  const handleLogin = (form: LoginFormsInputs) => {
+    loginUser(form.email, form.password);
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-950 text-gray-100 px-6">
       <motion.div
@@ -19,7 +38,7 @@ const LoginPage = (props: Props) => {
           <h1 className="text-2xl font-bold text-white">Welcome Back</h1>
         </div>
 
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit(handleLogin)}>
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-300">
               Email
@@ -29,6 +48,7 @@ const LoginPage = (props: Props) => {
               placeholder="you@example.com"
               className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none text-gray-100"
               required
+              {...register("email")}
             />
           </div>
 
@@ -41,6 +61,7 @@ const LoginPage = (props: Props) => {
               placeholder="••••••••"
               className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none text-gray-100"
               required
+              {...register("password")}
             />
           </div>
 

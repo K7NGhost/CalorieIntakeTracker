@@ -10,14 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/vite": "^4.1.14",
     "axios": "^1.12.2",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.545.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-hook-form": "^7.65.0",
     "react-router-dom": "^7.9.4",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
