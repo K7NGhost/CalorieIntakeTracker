@@ -8,6 +8,7 @@ using System.Text;
 using CalorieIntakeTracker.api.Transformers;
 using CalorieIntakeTracker.api.Interfaces;
 using CalorieIntakeTracker.api.Repository;
+using CalorieIntakeTracker.api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +54,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+builder.Services.AddScoped<FoodRecognitionService>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi(options =>

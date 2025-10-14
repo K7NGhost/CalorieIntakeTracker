@@ -1,4 +1,5 @@
 ﻿using CalorieIntakeTracker.api.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,7 @@ namespace CalorieIntakeTracker.api.tests.Services
         private readonly ILogger<FoodRecognitionService> _logger;
         private readonly FoodRecognitionService _service;
         private readonly string _testImage = Path.Combine(AppContext.BaseDirectory, "Images", "burger.jpg");
+        private readonly string _barcodeTestImage = Path.Combine(AppContext.BaseDirectory, "Images", "barcode_test_3.jpg");
 
         public FoodRecognitionTests(ITestOutputHelper output)
         {
@@ -54,6 +56,25 @@ namespace CalorieIntakeTracker.api.tests.Services
             var result = await service.RecognizeFoodAsync(image, "burger.jpg");
             _output.WriteLine($"The returned result is {result}");
             Assert.False(string.IsNullOrWhiteSpace(result));
+        }
+
+        [Fact]
+        public async Task RecognizeFoodAsync_BarcodeReturnResult()
+        {
+            var service = new FoodRecognitionService(_logger, _chat, _file);
+            var imageBytes = await File.ReadAllBytesAsync(_barcodeTestImage);
+            var stream = new MemoryStream(imageBytes);
+            var formFile = new FormFile(stream, 0, stream.Length, "image", "barcode_sample.jpg")
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = "image/jpeg"
+            };
+
+            var result = await service.RecognizeFoodByBarcodeAsync(formFile);
+            _output.WriteLine($"finished result");
+            Assert.False(string.IsNullOrWhiteSpace(result));
+            _output.WriteLine($"The returned result is: {result}");
+
         }
     }
 }

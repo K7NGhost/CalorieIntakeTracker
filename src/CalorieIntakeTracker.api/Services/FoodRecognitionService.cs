@@ -2,6 +2,10 @@
 using Rystem.OpenAi;
 using Rystem.OpenAi.Chat;
 using Rystem.OpenAi.Files;
+using ZXing;
+using ZXing.QrCode;
+using System.Drawing;
+using ZXing.Windows.Compatibility;
 
 namespace CalorieIntakeTracker.api.Services
 {
@@ -22,14 +26,28 @@ namespace CalorieIntakeTracker.api.Services
         {
             string base64Image = Convert.ToBase64String(imageStream);
             var uploaded = await _fileClient.UploadFileAsync(imageStream, fileName, MimeType.Jpg, PurposeFileUpload.Vision);
-            _logger.LogInformation($"Uploaded the image: {uploaded.Name}");
-            _logger.LogInformation($"Now adding the content");
-            var messages = _chatClient.AddContent(ChatRole.User).AddText("Identify the food in this image.").AddImage($"data:image/jpeg;base64,{base64Image}", ResolutionForVision.Auto);
-            //_chatClient.ForceResponseAsJsonFormat();
-            _logger.LogInformation($"Now Executing");
+            var messages = _chatClient.AddContent(ChatRole.User).AddText("Identify the food in this image and respond in JSON format with fields 'food' and 'confidence'.").AddImage($"data:image/jpeg;base64,{base64Image}", ResolutionForVision.Auto);
+            _chatClient.ForceResponseAsJsonFormat();
             var result = await _chatClient.ExecuteAsync();
-            _logger.LogInformation($"Returned result: {result}");
             return result.Choices?.FirstOrDefault()?.Message?.Content;
+        }
+
+        public async Task<string?> RecognizeFoodByBarcodeAsync(IFormFile imageFile)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+                return null;
+
+            // Copy uploaded image to a memory stream
+            using var stream = imageFile.OpenReadStream();
+            using var bitmap = new Bitmap(stream);
+
+            // Initialize barcode reader
+            var reader = new BarcodeReader();
+
+            // Decode barcode
+            var result = reader.Decode(bitmap);
+
+            return result?.Text; // returns the barcode string (e.g., "012345678905")
         }
     }
 }
