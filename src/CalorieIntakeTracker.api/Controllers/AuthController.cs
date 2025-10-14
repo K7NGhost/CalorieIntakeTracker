@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace CalorieIntakeTracker.api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/account/")]
     public class AuthController : ControllerBase
     {
         private readonly Supabase.Client _supabase;
