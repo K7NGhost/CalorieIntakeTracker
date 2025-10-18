@@ -10,7 +10,7 @@ type UserContextType = {
   user: UserProfile | null;
   token: string | null;
   registerUser: (email: string, password: string) => void;
-  loginUser: (username: string, password: string) => void;
+  loginUser: (email: string, password: string) => void;
   logout: () => void;
   isLoggedIn: () => boolean;
 };
@@ -54,8 +54,8 @@ export const UserProvider = ({ children }: Props) => {
       .catch((e) => toast.warning("Server error occured"));
   };
 
-  const loginUser = async (username: string, password: string) => {
-    await loginAPI(username, password)
+  const loginUser = async (email: string, password: string) => {
+    await loginAPI(email, password)
       .then((res) => {
         if (res) {
           localStorage.setItem("token", res?.data.token);

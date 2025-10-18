@@ -1,115 +1,169 @@
-import { motion } from 'framer-motion'
-import { BarChart3, Flame } from 'lucide-react'
-import React from 'react'
+import { motion } from "framer-motion";
+import { BarChart3, Flame } from "lucide-react";
+import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
+import React, { useState } from "react";
+import FoodList from "../../Components/FoodList/FoodList";
+import { Link } from "react-router-dom";
 
-type Props = {}
+type Props = {};
 
 const DashboardPage = (props: Props) => {
+  const [showDialog, setShowDialog] = useState(false);
+
   return (
-    <div className="min-h-screen bg-neutral-950 text-gray-100 px-6 py-10 flex flex-col items-center">
-      <motion.div
-        initial={{ opacity: 0, y: 25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-2xl bg-neutral-900 border border-neutral-800 rounded-2xl p-8 shadow-lg"
-      >
-        <div className="flex items-center justify-center mb-6 space-x-2">
-          <Flame className="text-orange-500" size={28} />
-          <h1 className="text-3xl font-bold text-white">Your Fitness Dashboard</h1>
+    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col items-center px-6 py-10">
+      {/* Greeting */}
+      <div className="text-center mb-10">
+        <h1 className="text-3xl font-bold mb-2">Welcome back, Kevin Argueta</h1>
+        <p className="text-lg text-gray-400">Streak: 7 days 🔥</p>
+      </div>
+
+      {/* Radial Progress Section */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+        <div className="flex flex-col items-center">
+          <div className="w-24 h-24 mb-2">
+            <CircularProgressbar
+              value={50}
+              text={`50%`}
+              styles={buildStyles({
+                textColor: "#fff",
+                pathColor: "#22c55e",
+                trailColor: "#1f2937",
+              })}
+            />
+          </div>
+          <p className="text-sm text-gray-300">
+            Calories
+            <br />
+            <span className="font-semibold text-white">50/100 kcal</span>
+          </p>
         </div>
 
-        {/* Input Form */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">Age</label>
-            <input
-              type="number"
-              placeholder="Years"
-              className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+        <div className="flex flex-col items-center">
+          <div className="w-24 h-24 mb-2">
+            <CircularProgressbar
+              value={50}
+              text={`${50}%`}
+              styles={buildStyles({
+                textColor: "#fff",
+                pathColor: "#3b82f6",
+                trailColor: "#1f2937",
+              })}
             />
           </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">Weight (kg)</label>
-            <input
-              type="number"
-              placeholder="e.g. 70"
-              className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">Height (cm)</label>
-            <input
-              type="number"
-              placeholder="e.g. 175"
-              className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">Activity Level</label>
-            <select
-              className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none"
-            >
-              <option value="sedentary">Sedentary (little exercise)</option>
-              <option value="light">Light (1-3 days/week)</option>
-              <option value="moderate">Moderate (3-5 days/week)</option>
-              <option value="active">Active (6-7 days/week)</option>
-              <option value="very">Very Active (physical job)</option>
-            </select>
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="block mb-2 text-sm font-medium text-gray-300">Goal</label>
-            <div className="flex gap-4">
-              <div>Goal section</div>
-            </div>
-          </div>
+          <p className="text-sm text-gray-300">
+            Protein
+            <br />
+            <span className="font-semibold text-white">50/100g</span>
+          </p>
         </div>
 
+        <div className="flex flex-col items-center">
+          <div className="w-24 h-24 mb-2">
+            <CircularProgressbar
+              value={50}
+              text={`50%`}
+              styles={buildStyles({
+                textColor: "#fff",
+                pathColor: "#f59e0b",
+                trailColor: "#1f2937",
+              })}
+            />
+          </div>
+          <p className="text-sm text-gray-300">
+            Carbs
+            <br />
+            <span className="font-semibold text-white">50/100g</span>
+          </p>
+        </div>
+
+        <div className="flex flex-col items-center">
+          <div className="w-24 h-24 mb-2">
+            <CircularProgressbar
+              value={50}
+              text={`50%`}
+              styles={buildStyles({
+                textColor: "#fff",
+                pathColor: "#ef4444",
+                trailColor: "#1f2937",
+              })}
+            />
+          </div>
+          <p className="text-sm text-gray-300">
+            Fat
+            <br />
+            <span className="font-semibold text-white">10/20g</span>
+          </p>
+        </div>
+      </div>
+
+      {/* Summary Card */}
+      <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-md text-center shadow-lg mb-10">
+        <h2 className="text-xl font-semibold mb-2">Daily Summary</h2>
+        <p className="text-gray-300 mb-1">Calories Remaining: 100</p>
+        <p className="text-gray-300 mb-1">Water Intake: 5 / 8 cups</p>
+        <p className="text-gray-300 mb-1">Steps: 6,452</p>
+        <p className="text-gray-300">Goal: Maintain Weight</p>
+      </div>
+
+      {/* Recently Added Foods */}
+      <div className="w-full max-w-md mb-10">
+        <FoodList />
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-6">
         <button
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-md font-semibold transition"
+          className="bg-orange-500 px-6 py-3 rounded-lg font-semibold hover:bg-orange-700"
+          onClick={() => setShowDialog(true)}
         >
-          Calculate
+          + Add Food
         </button>
+        <button className="bg-orange-500 px-6 py-3 rounded-lg font-semibold hover:bg-orange-700">
+          View Dashboard
+        </button>
+      </div>
 
-        {/* Results */}
-        {(
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-10 border-t border-neutral-800 pt-6"
-          >
-            <div className="flex items-center justify-center mb-4 space-x-2">
-              <BarChart3 className="text-orange-500" size={22} />
-              <h2 className="text-xl font-semibold text-white">Your Daily Budget</h2>
+      {/* Add Food Dialog */}
+      {showDialog && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
+          <div className="bg-gray-900 p-8 rounded-2xl shadow-lg w-80 text-center">
+            <h3 className="text-xl font-semibold mb-6 text-gray-100">
+              Add Food
+            </h3>
+
+            <div className="flex flex-col gap-4">
+              <Link
+                to="/foodSearch"
+                className="bg-blue-600 hover:bg-blue-700 px-4 py-3 rounded-lg font-semibold"
+              >
+                Manually Search for Food
+              </Link>
+              <Link
+                to="/aiScan"
+                className="bg-green-600 hover:bg-green-700 px-4 py-3 rounded-lg font-semibold"
+              >
+                Use AI to Detect Food
+              </Link>
+              <Link
+                to="/barcodeScan"
+                className="bg-yellow-600 hover:bg-yellow-700 px-4 py-3 rounded-lg font-semibold"
+              >
+                Scan Barcode
+              </Link>
             </div>
 
-            <div className="text-center space-y-2">
-              <p className="text-3xl font-bold text-orange-400">10 kcal</p>
-              <p className="text-gray-400 text-sm">per day to 0 weight</p>
-            </div>
-
-            <div className="grid grid-cols-3 gap-6 mt-8 text-center">
-              <div className="bg-neutral-800 p-4 rounded-lg border border-neutral-700">
-                <p className="text-gray-400 text-sm">Protein</p>
-                <p className="text-2xl font-bold text-orange-400">5 g</p>
-              </div>
-              <div className="bg-neutral-800 p-4 rounded-lg border border-neutral-700">
-                <p className="text-gray-400 text-sm">Carbs</p>
-                <p className="text-2xl font-bold text-orange-400">5 g</p>
-              </div>
-              <div className="bg-neutral-800 p-4 rounded-lg border border-neutral-700">
-                <p className="text-gray-400 text-sm">Fat</p>
-                <p className="text-2xl font-bold text-orange-400">5 g</p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </motion.div>
+            <button
+              onClick={() => setShowDialog(false)}
+              className="mt-6 text-gray-400 hover:text-gray-200"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default DashboardPage
+export default DashboardPage;
