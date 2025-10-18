@@ -2,6 +2,7 @@ import React from "react";
 import "tailwindcss";
 import { motion } from "framer-motion";
 import { BarChart3, Camera, Utensils } from "lucide-react";
+import { Link } from "react-router-dom";
 
 type Props = {};
 
@@ -24,13 +25,13 @@ const HomePage = (props: Props) => {
             recognition, and personalized calorie goals — all in one sleek
             dashboard.
           </p>
-          <div className="space-y-4">
-            <div className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-md font-semibold">
+          <div className="space-x-4">
+            <Link to="/dashboard" className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-md font-semibold">
               Go to Dashboard
-            </div>
-            <div className="border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white px-6 py-3 rounded-md font-semibold transition">
+            </Link>
+            <Link to="learnMore" className="border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white px-6 py-3 rounded-md font-semibold transition">
               Learn More
-            </div>
+            </Link>
           </div>
         </motion.div>
 
