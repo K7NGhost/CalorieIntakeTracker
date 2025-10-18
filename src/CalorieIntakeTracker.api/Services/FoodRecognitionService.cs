@@ -26,7 +26,7 @@ namespace CalorieIntakeTracker.api.Services
         {
             string base64Image = Convert.ToBase64String(imageStream);
             var uploaded = await _fileClient.UploadFileAsync(imageStream, fileName, MimeType.Jpg, PurposeFileUpload.Vision);
-            var messages = _chatClient.AddContent(ChatRole.User).AddText("Identify the food in this image and respond in JSON format with fields 'food' and 'confidence'.").AddImage($"data:image/jpeg;base64,{base64Image}", ResolutionForVision.Auto);
+            var messages = _chatClient.AddContent(ChatRole.User).AddText("Identify the food and calories in this image and respond in JSON format with fields 'food' and 'confidence'.").AddImage($"data:image/jpeg;base64,{base64Image}", ResolutionForVision.Auto);
             _chatClient.ForceResponseAsJsonFormat();
             var result = await _chatClient.ExecuteAsync();
             return result.Choices?.FirstOrDefault()?.Message?.Content;
