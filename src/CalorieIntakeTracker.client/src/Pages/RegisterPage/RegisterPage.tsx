@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Flame } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import * as Yup from "yup"
+import * as Yup from "yup";
 import { useAuth } from "../../Context/useAuth";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -10,26 +10,28 @@ import { useForm } from "react-hook-form";
 type Props = {};
 
 type RegisterFormsInputs = {
-  email: string,
-  password: string
+  name: string;
+  email: string;
+  password: string;
 };
 
 const validation = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
   email: Yup.string().required("Email is required"),
-  password: Yup.string().required("Password is required")
+  password: Yup.string().required("Password is required"),
 });
 
 const RegisterPage = (props: Props) => {
-  const {registerUser} = useAuth();
+  const { registerUser } = useAuth();
   const {
     register,
     handleSubmit,
-    formState: {errors}
-  } = useForm<RegisterFormsInputs>({resolver: yupResolver(validation)});
+    formState: { errors },
+  } = useForm<RegisterFormsInputs>({ resolver: yupResolver(validation) });
 
   const handleLogin = (form: RegisterFormsInputs) => {
-    registerUser(form.email, form.password)
-  }
+    registerUser(form.email, form.password, form.name);
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-950 text-gray-100 px-6">
       <motion.div
@@ -46,12 +48,14 @@ const RegisterPage = (props: Props) => {
         <form className="space-y-5" onSubmit={handleSubmit(handleLogin)}>
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-300">
-              Name
+              UserName
             </label>
             <input
               type="text"
-              placeholder="John Doe"
+              placeholder="Enter name"
               className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none text-gray-100"
+              required
+              {...register("name")}
             />
           </div>
 

@@ -4,17 +4,21 @@ import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
 import React, { useState } from "react";
 import FoodList from "../../Components/FoodList/FoodList";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../Context/useAuth";
 
 type Props = {};
 
 const DashboardPage = (props: Props) => {
   const [showDialog, setShowDialog] = useState(false);
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col items-center px-6 py-10">
       {/* Greeting */}
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold mb-2">Welcome back, Kevin Argueta</h1>
+        <h1 className="text-3xl font-bold mb-2">
+          Welcome back, {user?.username}
+        </h1>
         <p className="text-lg text-gray-400">Streak: 7 days 🔥</p>
       </div>
 

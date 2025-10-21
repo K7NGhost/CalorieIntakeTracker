@@ -11,7 +11,7 @@ namespace CalorieIntakeTracker.api.Models.Auth
     {
         public Guid Id { get; set; }
         public string Email { get; set; } = string.Empty;
-        public string? Name { get; set; }
         public DateTime CreatedAt { get; set; }
+        public object? Username { get; set; }
     }
 }

@@ -1,10 +1,12 @@
-﻿using OpenAI;
+﻿using CalorieIntakeTracker.api.Models.AI;
+using OpenAI;
 using Rystem.OpenAi;
 using Rystem.OpenAi.Chat;
 using Rystem.OpenAi.Files;
+using System.Drawing;
+using System.Text.Json;
 using ZXing;
 using ZXing.QrCode;
-using System.Drawing;
 using ZXing.Windows.Compatibility;
 
 namespace CalorieIntakeTracker.api.Services
@@ -22,14 +24,36 @@ namespace CalorieIntakeTracker.api.Services
             _fileClient = fileClient;
         }
 
-        public async Task<string?> RecognizeFoodAsync(byte[] imageStream, string fileName)
+        public async Task<AIRecognitionResult> RecognizeFoodAsync(byte[] imageStream, string fileName)
         {
             string base64Image = Convert.ToBase64String(imageStream);
             var uploaded = await _fileClient.UploadFileAsync(imageStream, fileName, MimeType.Jpg, PurposeFileUpload.Vision);
-            var messages = _chatClient.AddContent(ChatRole.User).AddText("Identify the food and calories in this image and respond in JSON format with fields 'food' and 'confidence'.").AddImage($"data:image/jpeg;base64,{base64Image}", ResolutionForVision.Auto);
+            var messages = _chatClient.AddContent(ChatRole.User).AddText("Identify the food and estimate nutritional values in this image. Respond in JSON format with fields 'food', 'calories', 'protein', 'carbs', 'fats', and 'confidence'.")
+                .AddImage($"data:image/jpeg;base64,{base64Image}", ResolutionForVision.Auto);
             _chatClient.ForceResponseAsJsonFormat();
             var result = await _chatClient.ExecuteAsync();
-            return result.Choices?.FirstOrDefault()?.Message?.Content;
+            var content = result.Choices?.FirstOrDefault()?.Message?.Content;
+
+            if (string.IsNullOrWhiteSpace(content))
+                return null;
+
+            try
+            {
+                // Deserialize JSON into your model
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var aiResult = JsonSerializer.Deserialize<AIRecognitionResult>(content, options);
+                return aiResult;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON Parse Error: {ex.Message}");
+                Console.WriteLine($"Raw Response: {content}");
+                return null;
+            }
         }
 
         public async Task<string?> RecognizeFoodByBarcodeAsync(IFormFile imageFile)
