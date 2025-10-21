@@ -3,6 +3,8 @@ using Supabase;
 using CalorieIntakeTracker.api.Models.Auth;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Supabase.Gotrue;
+using User = CalorieIntakeTracker.api.Models.Auth.User;
 
 namespace CalorieIntakeTracker.api.Controllers
 {
@@ -22,7 +24,14 @@ namespace CalorieIntakeTracker.api.Controllers
         {
             try
             {
-                var session = await _supabase.Auth.SignUp(request.Email, request.Password);
+                var options = new SignUpOptions
+                {
+                    Data = new Dictionary<string, object>
+                    {
+                        {"username", request.Name }
+                    }
+                };
+                var session = await _supabase.Auth.SignUp(request.Email, request.Password, options);
                 
                 if (session?.User == null)
                 {
@@ -33,11 +42,12 @@ namespace CalorieIntakeTracker.api.Controllers
                 {
                     AccessToken = session.AccessToken ?? string.Empty,
                     RefreshToken = session.RefreshToken ?? string.Empty,
-                    User = new User
+                    User = new Models.Auth.User
                     {
                         Id = Guid.Parse(session.User.Id),
                         Email = session.User.Email ?? string.Empty,
-                        CreatedAt = session.User.CreatedAt
+                        CreatedAt = session.User.CreatedAt,
+                        Username = session.User.UserMetadata["username"]
                     }
                 });
             }
@@ -67,7 +77,8 @@ namespace CalorieIntakeTracker.api.Controllers
                     {
                         Id = Guid.Parse(session.User.Id),
                         Email = session.User.Email ?? string.Empty,
-                        CreatedAt = session.User.CreatedAt
+                        CreatedAt = session.User.CreatedAt,
+                        Username = session.User.UserMetadata["username"]
                     }
                 });
             }

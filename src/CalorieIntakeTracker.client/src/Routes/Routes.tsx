@@ -9,6 +9,7 @@ import LearnMorePage from "../Pages/LearnMorePage/LearnMorePage";
 import AiPage from "../Pages/AiPage/AiPage";
 import BarcodeScanPage from "../Pages/BarcodeScanPage/BarcodeScanPage";
 import FoodSearchPage from "../Pages/FoodSearchPage/FoodSearchPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -19,10 +20,38 @@ export const router = createBrowserRouter([
       { path: "login", element: <LoginPage></LoginPage> },
       { path: "register", element: <RegisterPage></RegisterPage> },
       { path: "design", element: <DesignPage></DesignPage> },
-      { path: "dashboard", element: <DashboardPage></DashboardPage> },
-      { path: "aiScan", element: <AiPage></AiPage> },
-      { path: "barcodeScan", element: <BarcodeScanPage></BarcodeScanPage> },
-      { path: "foodSearch", element: <FoodSearchPage></FoodSearchPage> },
+      {
+        path: "dashboard",
+        element: (
+          <ProtectedRoute>
+            <DashboardPage></DashboardPage>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "aiScan",
+        element: (
+          <ProtectedRoute>
+            <AiPage></AiPage>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "barcodeScan",
+        element: (
+          <ProtectedRoute>
+            <BarcodeScanPage></BarcodeScanPage>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "foodSearch",
+        element: (
+          <ProtectedRoute>
+            <FoodSearchPage></FoodSearchPage>
+          </ProtectedRoute>
+        ),
+      },
       { path: "learnMore", element: <LearnMorePage></LearnMorePage> },
     ],
   },

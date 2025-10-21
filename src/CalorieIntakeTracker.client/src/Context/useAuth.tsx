@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router";
-import type { UserProfile } from "../Models/User";
+import { useNavigate } from "react-router-dom";
+import type { AuthResponse, UserProfile } from "../Models/User";
 import { createContext, useEffect, useState } from "react";
 import { loginAPI, registerAPI } from "../Services/AuthService";
 import { toast } from "react-toastify";
@@ -9,7 +9,7 @@ import axios from "axios";
 type UserContextType = {
   user: UserProfile | null;
   token: string | null;
-  registerUser: (email: string, password: string) => void;
+  registerUser: (email: string, password: string, username: string) => void;
   loginUser: (email: string, password: string) => void;
   logout: () => void;
   isLoggedIn: () => boolean;
@@ -36,53 +36,73 @@ export const UserProvider = ({ children }: Props) => {
     setIsReady(true);
   }, []);
 
-  const registerUser = async (email: string, password: string) => {
-    await registerAPI(email, password)
-      .then((res) => {
-        if (res) {
-          localStorage.setItem("token", res?.data.token);
+  const registerUser = async (
+    email: string,
+    password: string,
+    username: string
+  ) => {
+    await registerAPI(email, password, username)
+      .then((res: any) => {
+        const returnedToken = res?.data?.token ?? res?.data?.accessToken;
+        if (returnedToken) {
+          localStorage.setItem("token", returnedToken);
           const userObj = {
-            email: res?.data.email,
+            email: res?.data?.email ?? email,
+            username: res?.data?.username ?? username,
+            id: res?.data?.id,
           };
           localStorage.setItem("user", JSON.stringify(userObj));
-          setToken(res?.data.token!);
-          setUser(userObj!);
+          setToken(returnedToken);
+          setUser(userObj);
+          axios.defaults.headers.common["Authorization"] =
+            "Bearer " + returnedToken;
           toast.success("Login Success!");
           navigate("/dashboard");
+        } else {
+          toast.error("Invalid register response");
         }
       })
-      .catch((e) => toast.warning("Server error occured"));
+      .catch(() => toast.warning("Server error occurred"));
   };
 
   const loginUser = async (email: string, password: string) => {
     await loginAPI(email, password)
-      .then((res) => {
-        if (res) {
-          localStorage.setItem("token", res?.data.token);
+      .then((res: any) => {
+        const returnedToken = res?.data?.accessToken ?? res?.data?.token;
+        if (res?.data?.user && returnedToken) {
+          localStorage.setItem("token", returnedToken);
+
           const userObj = {
-            email: res?.data.email,
+            id: res.data.user.id,
+            email: res.data.user.email,
+            username: res.data.user.username,
           };
+
           localStorage.setItem("user", JSON.stringify(userObj));
-          setToken(res?.data.token!);
-          setUser(userObj!);
+          setToken(returnedToken);
+          setUser(userObj);
+          axios.defaults.headers.common["Authorization"] =
+            "Bearer " + returnedToken;
+
           toast.success("Login Success!");
           navigate("/dashboard");
+        } else {
+          toast.error("Invalid login response");
         }
       })
-      .catch((e) => toast.warning("Server error occured"));
-  };
-
-  const isLoggedIn = () => {
-    return !!user;
+      .catch(() => toast.warning("Server error occurred"));
   };
 
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
-    setToken("");
+    setToken(null);
+    delete axios.defaults.headers.common["Authorization"];
     navigate("/");
   };
+
+  const isLoggedIn = () => Boolean(token && user);
 
   return (
     <UserContext.Provider
