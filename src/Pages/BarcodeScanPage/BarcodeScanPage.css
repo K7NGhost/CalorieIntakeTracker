@@ -1,0 +1,187 @@
+/* Barcode Scanner Page Styles */
+
+.barcode-scanner-container {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+.scanner-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanner-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 165, 0, 0.1) 50%, transparent 70%);
+  animation: scanner-beam 2s infinite linear;
+  pointer-events: none;
+}
+
+@keyframes scanner-beam {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.scan-frame {
+  position: relative;
+  border: 2px solid #ff6b35;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+}
+
+.scan-frame::before,
+.scan-frame::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #ff6b35;
+}
+
+.scan-frame::before {
+  top: -3px;
+  left: -3px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.scan-frame::after {
+  bottom: -3px;
+  right: -3px;
+  border-left: none;
+  border-top: none;
+}
+
+.upload-zone {
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.upload-zone:hover {
+  background: rgba(255, 107, 53, 0.05);
+  transform: translateY(-2px);
+}
+
+.upload-zone.dragover {
+  background: rgba(255, 107, 53, 0.1);
+  border-color: #ff6b35;
+}
+
+.scan-button {
+  background: #2d2d2d;
+  border: 2px solid #ff6b35;
+  color: #ff6b35;
+  transition: all 0.3s ease;
+}
+
+.scan-button:hover {
+  background: #ff6b35;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(255, 107, 53, 0.3);
+}
+
+.camera-button {
+  background: #ff6b35;
+  border: 2px solid #ff6b35;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.camera-button:hover {
+  background: #ff8c42;
+  border-color: #ff8c42;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(255, 107, 53, 0.3);
+}
+
+.stop-button {
+  background: #2d2d2d;
+  border: 2px solid #ea4335;
+  color: #ea4335;
+  transition: all 0.3s ease;
+}
+
+.stop-button:hover {
+  background: #ea4335;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(234, 67, 53, 0.3);
+}
+
+.food-data-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.input-field {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.input-field:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.save-button {
+  background: #ff6b35;
+  border: 2px solid #ff6b35;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.save-button:hover {
+  background: #ff8c42;
+  border-color: #ff8c42;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(255, 107, 53, 0.3);
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-message {
+  background: rgba(234, 67, 53, 0.1);
+  border: 1px solid rgba(234, 67, 53, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.success-message {
+  background: rgba(52, 168, 83, 0.1);
+  border: 1px solid rgba(52, 168, 83, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .scanner-overlay {
+    height: 250px;
+  }
+  
+  .scan-frame {
+    width: 200px;
+    height: 120px;
+  }
+}
