@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "tailwindcss";
 import RegisterPage from "../../Pages/RegisterPage/RegisterPage";
 import { useAuth } from "../../Context/useAuth";
-
+// commnent
 type Props = {};
 
 const Navbar = (props: Props) => {
@@ -32,6 +32,7 @@ const Navbar = (props: Props) => {
             >
               Sign Up
             </Link>
+
           </>
         ) : (
           <button
