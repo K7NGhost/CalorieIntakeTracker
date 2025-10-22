@@ -6,7 +6,7 @@ import RegisterPage from "../../Pages/RegisterPage/RegisterPage";
 import { useAuth } from "../../Context/useAuth";
 // commnent
 type Props = {};
-
+const test:String = "test";
 const Navbar = (props: Props) => {
   const { isLoggedIn, logout } = useAuth();
   return (
