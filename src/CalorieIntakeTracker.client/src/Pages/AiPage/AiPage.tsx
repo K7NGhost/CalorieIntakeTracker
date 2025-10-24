@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { recognizeFoodByAI } from "../../Services/FoodRecognitionService";
 import { ClipLoader } from "react-spinners";
+import "./AiPage.css";
 
 type Props = {};
 
@@ -51,7 +52,7 @@ const AiPage = (props: Props) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col items-center px-6 py-10">
+    <div className="min-h-screen text-gray-100 flex flex-col items-center px-6 py-10" style={{ backgroundColor: '#262628' }}>
       {/* Header */}
       <h1 className="text-3xl font-bold mb-6">AI Food Recognition</h1>
       <p className="text-gray-400 mb-10 text-center max-w-md">

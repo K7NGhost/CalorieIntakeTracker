@@ -1,0 +1,110 @@
+/* Barcode Scanner Page Styles */
+
+.barcode-scanner-container {
+  background-color: #6b7280; /* Grey background */
+}
+
+.upload-zone {
+  transition: border-color 0.3s ease;
+}
+
+.upload-zone:hover {
+  border-color: #f97316; /* orange-500 */
+}
+
+.scan-button {
+  background-color: #f97316; /* orange-500 */
+  color: white;
+}
+
+.scan-button:hover:not(:disabled) {
+  background-color: #ea580c; /* orange-600 */
+}
+
+.camera-button {
+  background-color: #059669; /* emerald-600 */
+  color: white;
+}
+
+.camera-button:hover {
+  background-color: #047857; /* emerald-700 */
+}
+
+.stop-button {
+  background-color: #dc2626; /* red-600 */
+  color: white;
+}
+
+.stop-button:hover {
+  background-color: #b91c1c; /* red-700 */
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.scan-frame {
+  border: 2px solid #f97316; /* orange-500 */
+  border-radius: 8px;
+  position: relative;
+}
+
+.scan-frame::before,
+.scan-frame::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f97316; /* orange-500 */
+}
+
+.scan-frame::before {
+  top: -2px;
+  left: -2px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.scan-frame::after {
+  bottom: -2px;
+  right: -2px;
+  border-left: none;
+  border-top: none;
+}
+
+.error-message {
+  background-color: #7f1d1d; /* red-900 */
+  border: 1px solid #dc2626; /* red-600 */
+}
+
+.food-data-card {
+  background-color: #111827; /* gray-900 */
+}
+
+.input-field {
+  background-color: #1f2937; /* gray-800 */
+  border: 1px solid #374151; /* gray-700 */
+}
+
+.input-field:focus {
+  border-color: #f97316; /* orange-500 */
+  outline: none;
+}
+
+.save-button {
+  background-color: #059669; /* emerald-600 */
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #047857; /* emerald-700 */
+}
