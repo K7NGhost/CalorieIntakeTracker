@@ -7,6 +7,8 @@ using CalorieIntakeTracker.api.Dtos.Food;
 using CalorieIntakeTracker.api.Repository;
 using CalorieIntakeTracker.api.Mappers;
 using CalorieIntakeTracker.api.Interfaces;
+using CalorieIntakeTracker.api.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CalorieIntakeTracker.api.Controllers
 {
@@ -17,11 +19,13 @@ namespace CalorieIntakeTracker.api.Controllers
     {
         private readonly Client _supabase;
         private readonly IFoodRepository _foodRepo;
+        private readonly ApplicationDbContext _context;
 
-        public FoodItemController(Client supabase, IFoodRepository foodRepo)
+        public FoodItemController(Client supabase, IFoodRepository foodRepo, ApplicationDbContext context)
         {
             _supabase = supabase;
             _foodRepo = foodRepo;
+            _context = context;
         }
 
         [HttpGet]
@@ -41,14 +45,26 @@ namespace CalorieIntakeTracker.api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<FoodItem>> Create([FromBody] FoodItemCreateDto foodDto)
+        public async Task<ActionResult<FoodItem>> Create(int mealLogId, [FromBody] FoodItemCreateDto foodDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var mealLog = await _context.MealLogs.FindAsync(mealLogId);
+            if (mealLog == null)
+                return NotFound($"MealLog with ID {mealLogId} not found.");
+
             var foodModel = FoodMapper.ToFoodItemFromCreateDto(foodDto);
+            foodModel.MealLogId = mealLogId;
             await _foodRepo.CreateAsync(foodModel);
             return CreatedAtAction(nameof(GetById), new { id = foodModel.Id }, foodModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFoodItems(int mealLogId)
+        {
+            var items = await _context.FoodItems.Where(f => f.MealLogId == mealLogId).ToListAsync();
+            return Ok(items);
         }
 
         [HttpPut("{id}")]

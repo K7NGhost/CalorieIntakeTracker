@@ -1,13 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CalorieIntakeTracker.api.Models.Food
 {
     [Table("food_entries")]
     public class FoodItem
     {
+        [Key]
         public int Id { get; set; }
+
+        // Foreign Key
         public int MealLogId { get; set; }
-        public string Name { get; set; } = null;
+
+        [Required]
+        public string Food { get; set; } = string.Empty;
         public double ServingSizeGrams { get; set; }
 
         // Nutrional info
@@ -16,7 +23,8 @@ namespace CalorieIntakeTracker.api.Models.Food
         public double Carbs { get; set; }
         public double Fat { get; set; }
 
-        // Source
-        public string? DataSource { get; set; } // USDA, BarcodeDB, AIModel
+        [JsonIgnore]
+        [ForeignKey("MealLogId")]
+        public MealLog? MealLog { get; set; }
     }
 }

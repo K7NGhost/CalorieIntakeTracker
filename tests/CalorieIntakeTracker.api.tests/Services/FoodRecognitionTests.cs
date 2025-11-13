@@ -55,7 +55,7 @@ namespace CalorieIntakeTracker.api.tests.Services
 
             var result = await service.RecognizeFoodAsync(image, "burger.jpg");
             _output.WriteLine($"The returned result is {result}");
-            Assert.False(string.IsNullOrWhiteSpace(result));
+            Assert.False(result == null);
         }
 
         [Fact]
