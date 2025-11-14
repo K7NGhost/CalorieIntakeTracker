@@ -10,6 +10,7 @@ import AiPage from "../Pages/AiPage/AiPage";
 import BarcodeScanPage from "../Pages/BarcodeScanPage/BarcodeScanPage";
 import FoodSearchPage from "../Pages/FoodSearchPage/FoodSearchPage";
 import ProtectedRoute from "./ProtectedRoute";
+import SetupPage from "../Pages/SetupPage/SetupPage";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <FoodSearchPage></FoodSearchPage>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "setup",
+        element: (
+          <ProtectedRoute>
+            <SetupPage></SetupPage>
           </ProtectedRoute>
         ),
       },

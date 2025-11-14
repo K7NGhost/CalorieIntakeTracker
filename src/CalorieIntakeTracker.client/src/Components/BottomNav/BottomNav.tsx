@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Home, BarChart3, Plus } from "lucide-react";
+import { Home, BarChart3, Plus, Wrench } from "lucide-react";
 
 const BottomNav: React.FC = () => {
   const [showDialog, setShowDialog] = useState(false);
@@ -26,43 +26,41 @@ const BottomNav: React.FC = () => {
           <Plus className="w-5 h-5" />
         </button>
 
-        {/* Stats */}
+        {/* Setup */}
         <Link
-          to="/stats"
+          to="/setup"
           className="flex flex-col items-center text-gray-400 hover:text-orange-500 transition"
         >
-          <BarChart3 className="w-6 h-6" />
-          <span className="text-xs mt-1">Stats</span>
+          <Wrench className="w-6 h-6"></Wrench>
+          <span className="text-xs mt-1">Setup</span>
         </Link>
       </footer>
 
       {/* Add Food Dialog */}
       {showDialog && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-[60]">
-          <div className="bg-gray-900 p-8 rounded-2xl shadow-lg w-80 text-center">
-            <h3 className="text-xl font-semibold mb-6 text-gray-100">
-              Add Food
-            </h3>
+          <div className="bg-neutral-900 border border-neutral-700 p-8 rounded-xl shadow-2xl w-80 max-w-[90%]">
+            <h3 className="text-2xl font-bold mb-6 text-gray-100">Add Food</h3>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               <Link
                 to="/foodSearch"
                 onClick={() => setShowDialog(false)}
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-3 rounded-lg font-semibold"
+                className="bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 hover:border-orange-500 px-4 py-3 rounded-lg font-semibold text-gray-100 transition-all duration-300"
               >
                 Manually Search for Food
               </Link>
               <Link
                 to="/aiScan"
                 onClick={() => setShowDialog(false)}
-                className="bg-green-600 hover:bg-green-700 px-4 py-3 rounded-lg font-semibold"
+                className="bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 hover:border-orange-500 px-4 py-3 rounded-lg font-semibold text-gray-100 transition-all duration-300"
               >
                 Use AI to Detect Food
               </Link>
               <Link
                 to="/barcodeScan"
                 onClick={() => setShowDialog(false)}
-                className="bg-yellow-600 hover:bg-yellow-700 px-4 py-3 rounded-lg font-semibold"
+                className="bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 hover:border-orange-500 px-4 py-3 rounded-lg font-semibold text-gray-100 transition-all duration-300"
               >
                 Scan Barcode
               </Link>
@@ -70,7 +68,7 @@ const BottomNav: React.FC = () => {
 
             <button
               onClick={() => setShowDialog(false)}
-              className="mt-6 text-gray-400 hover:text-gray-200"
+              className="mt-6 w-full text-gray-400 hover:text-gray-200 py-2 transition-colors"
             >
               Cancel
             </button>
