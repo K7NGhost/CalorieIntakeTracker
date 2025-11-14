@@ -10,13 +10,12 @@ namespace CalorieIntakeTracker.api.Mappers
         {
             return new FoodItem
             {
-                Name = foodDto.Name,
+                Food = foodDto.Food,
                 ServingSizeGrams = foodDto.ServingSizeGrams,
                 Calories = foodDto.Calories,
                 Protein = foodDto.Protein,
                 Carbs = foodDto.Carbs,
                 Fat = foodDto.Fat,
-                DataSource = foodDto.DataSource
             };
         }
     }

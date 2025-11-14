@@ -1,171 +1,143 @@
-import { motion } from "framer-motion";
-import { BarChart3, Flame } from "lucide-react";
-import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
-import React, { useState } from "react";
+import { BarChart3, Flame, Plus, Drumstick, Wheat, Apple } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import FoodList from "../../Components/FoodList/FoodList";
-import { Link } from "react-router-dom";
 import { useAuth } from "../../Context/useAuth";
+import StatsCard from "../../Components/StatsCard/StatsCard";
+import CalorieProgress from "../../Components/CalorieProgress/CalorieProgress";
+import BottomNav from "../../Components/BottomNav/BottomNav";
+import { getAllMealLogs, type MealLog } from "../../api/MealLogsApi";
+import { getCalorieBudget, type CalorieResultDto } from "../../api/profileApi";
 
 type Props = {};
 
 const DashboardPage = (props: Props) => {
-  const [showDialog, setShowDialog] = useState(false);
   const { user } = useAuth();
+  const [mealLogs, setMealLogs] = useState<MealLog[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [calorieGoals, setCalorieGoals] = useState<CalorieResultDto | null>(
+    null
+  );
+  const [goalsLoading, setGoalsLoading] = useState(true);
+
+  // Load meal logs when component mounts
+  useEffect(() => {
+    if (user?.id) {
+      loadMealLogs();
+      loadCalorieGoals();
+    }
+  }, [user]);
+
+  const loadMealLogs = async () => {
+    try {
+      setLoading(true);
+      const logs = await getAllMealLogs(user!.id);
+      setMealLogs(logs);
+    } catch (error) {
+      console.error("Failed to load meal logs:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadCalorieGoals = async () => {
+    try {
+      setGoalsLoading(true);
+      const goals = await getCalorieBudget();
+      setCalorieGoals(goals);
+    } catch (error) {
+      console.error("Failed to load calorie goals:", error);
+      // Set default values if profile not found
+      setCalorieGoals({
+        dailyCalories: 2000,
+        proteinGrams: 150,
+        carbGrams: 200,
+        fatGrams: 65,
+      });
+    } finally {
+      setGoalsLoading(false);
+    }
+  };
+
+  // Calculate totals from meal logs
+  const calculateDailyTotals = () => {
+    return mealLogs.reduce(
+      (totals, meal) => ({
+        calories: totals.calories + meal.totalCalories,
+        protein: totals.protein + meal.totalProtein,
+        carbs: totals.carbs + meal.totalCarbs,
+        fat: totals.fat + meal.totalFat,
+      }),
+      { calories: 0, protein: 0, carbs: 0, fat: 0 }
+    );
+  };
+
+  const dailyTotals = calculateDailyTotals();
+
+  if (goalsLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground pb-24 flex items-center justify-center">
+        <p className="text-gray-400">Loading your goals...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col items-center px-6 py-10">
-      {/* Greeting */}
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold mb-2">
-          Welcome back, {user?.username}
-        </h1>
-        <p className="text-lg text-gray-400">Streak: 7 days 🔥</p>
-      </div>
+    <div className="min-h-screen bg-background text-foreground pb-24">
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* Left Column - Calorie Progress */}
+          <CalorieProgress
+            current={dailyTotals.calories}
+            goal={calorieGoals?.dailyCalories || 2000}
+          />
 
-      {/* Radial Progress Section */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
-        <div className="flex flex-col items-center">
-          <div className="w-24 h-24 mb-2">
-            <CircularProgressbar
-              value={50}
-              text={`50%`}
-              styles={buildStyles({
-                textColor: "#fff",
-                pathColor: "#22c55e",
-                trailColor: "#1f2937",
-              })}
-            />
-          </div>
-          <p className="text-sm text-gray-300">
-            Calories
-            <br />
-            <span className="font-semibold text-white">50/100 kcal</span>
-          </p>
-        </div>
-
-        <div className="flex flex-col items-center">
-          <div className="w-24 h-24 mb-2">
-            <CircularProgressbar
-              value={50}
-              text={`${50}%`}
-              styles={buildStyles({
-                textColor: "#fff",
-                pathColor: "#3b82f6",
-                trailColor: "#1f2937",
-              })}
-            />
-          </div>
-          <p className="text-sm text-gray-300">
-            Protein
-            <br />
-            <span className="font-semibold text-white">50/100g</span>
-          </p>
-        </div>
-
-        <div className="flex flex-col items-center">
-          <div className="w-24 h-24 mb-2">
-            <CircularProgressbar
-              value={50}
-              text={`50%`}
-              styles={buildStyles({
-                textColor: "#fff",
-                pathColor: "#f59e0b",
-                trailColor: "#1f2937",
-              })}
-            />
-          </div>
-          <p className="text-sm text-gray-300">
-            Carbs
-            <br />
-            <span className="font-semibold text-white">50/100g</span>
-          </p>
-        </div>
-
-        <div className="flex flex-col items-center">
-          <div className="w-24 h-24 mb-2">
-            <CircularProgressbar
-              value={50}
-              text={`50%`}
-              styles={buildStyles({
-                textColor: "#fff",
-                pathColor: "#ef4444",
-                trailColor: "#1f2937",
-              })}
-            />
-          </div>
-          <p className="text-sm text-gray-300">
-            Fat
-            <br />
-            <span className="font-semibold text-white">10/20g</span>
-          </p>
-        </div>
-      </div>
-
-      {/* Summary Card */}
-      <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-md text-center shadow-lg mb-10">
-        <h2 className="text-xl font-semibold mb-2">Daily Summary</h2>
-        <p className="text-gray-300 mb-1">Calories Remaining: 100</p>
-        <p className="text-gray-300 mb-1">Water Intake: 5 / 8 cups</p>
-        <p className="text-gray-300 mb-1">Steps: 6,452</p>
-        <p className="text-gray-300">Goal: Maintain Weight</p>
-      </div>
-
-      {/* Recently Added Foods */}
-      <div className="w-full max-w-md mb-10">
-        <FoodList />
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex gap-6">
-        <button
-          className="bg-orange-500 px-6 py-3 rounded-lg font-semibold hover:bg-orange-700"
-          onClick={() => setShowDialog(true)}
-        >
-          + Add Food
-        </button>
-        <button className="bg-orange-500 px-6 py-3 rounded-lg font-semibold hover:bg-orange-700">
-          View Dashboard
-        </button>
-      </div>
-
-      {/* Add Food Dialog */}
-      {showDialog && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
-          <div className="bg-gray-900 p-8 rounded-2xl shadow-lg w-80 text-center">
-            <h3 className="text-xl font-semibold mb-6 text-gray-100">
-              Add Food
-            </h3>
-
-            <div className="flex flex-col gap-4">
-              <Link
-                to="/foodSearch"
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-3 rounded-lg font-semibold"
-              >
-                Manually Search for Food
-              </Link>
-              <Link
-                to="/aiScan"
-                className="bg-green-600 hover:bg-green-700 px-4 py-3 rounded-lg font-semibold"
-              >
-                Use AI to Detect Food
-              </Link>
-              <Link
-                to="/barcodeScan"
-                className="bg-yellow-600 hover:bg-yellow-700 px-4 py-3 rounded-lg font-semibold"
-              >
-                Scan Barcode
-              </Link>
+          {/* Right Column - Stats and Recent Foods */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Macros Stats */}
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Macronutrients</h2>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <StatsCard
+                  label="Protein"
+                  value={dailyTotals.protein}
+                  goal={calorieGoals?.proteinGrams || 150}
+                  unit="g"
+                  icon={Drumstick}
+                  color="#f59e0b"
+                />
+                <StatsCard
+                  label="Carbs"
+                  value={dailyTotals.carbs}
+                  goal={calorieGoals?.carbGrams || 200}
+                  unit="g"
+                  icon={Wheat}
+                  color="#22c55e"
+                />
+                <StatsCard
+                  label="Fat"
+                  value={dailyTotals.fat}
+                  goal={calorieGoals?.fatGrams || 65}
+                  unit="g"
+                  icon={Apple}
+                  color="#ef4444"
+                />
+              </div>
             </div>
 
-            <button
-              onClick={() => setShowDialog(false)}
-              className="mt-6 text-gray-400 hover:text-gray-200"
-            >
-              Cancel
-            </button>
+            {/* Recent Foods List */}
+            {loading ? (
+              <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6">
+                <p className="text-gray-400 text-center">Loading meals...</p>
+              </div>
+            ) : (
+              <FoodList mealLogs={mealLogs} />
+            )}
           </div>
         </div>
-      )}
+      </main>
+
+      <BottomNav />
     </div>
   );
 };

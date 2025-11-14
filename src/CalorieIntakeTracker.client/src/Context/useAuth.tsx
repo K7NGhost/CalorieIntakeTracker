@@ -41,28 +41,53 @@ export const UserProvider = ({ children }: Props) => {
     password: string,
     username: string
   ) => {
-    await registerAPI(email, password, username)
-      .then((res: any) => {
-        const returnedToken = res?.data?.token ?? res?.data?.accessToken;
-        if (returnedToken) {
-          localStorage.setItem("token", returnedToken);
-          const userObj = {
-            email: res?.data?.email ?? email,
-            username: res?.data?.username ?? username,
-            id: res?.data?.id,
-          };
-          localStorage.setItem("user", JSON.stringify(userObj));
-          setToken(returnedToken);
-          setUser(userObj);
-          axios.defaults.headers.common["Authorization"] =
-            "Bearer " + returnedToken;
-          toast.success("Login Success!");
-          navigate("/dashboard");
-        } else {
-          toast.error("Invalid register response");
-        }
-      })
-      .catch(() => toast.warning("Server error occurred"));
+    try {
+      const res = await registerAPI(email, password, username);
+
+      if (!res) {
+        toast.error("No response from server");
+        return;
+      }
+
+      const data = res.data as unknown as AuthResponse;
+
+      if (!data.accessToken || !data.user) {
+        toast.error("Invalid register response");
+        return;
+      }
+
+      const token = data.accessToken;
+      const userObj = data.user;
+
+      // Save to storage + state
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userObj));
+
+      setToken(token);
+      setUser(userObj);
+
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+
+      // Optional: create default profile row
+      try {
+        await axios.post("/api/profile/save", {
+          age: null,
+          weightLb: null,
+          heightFt: null,
+          sex: null,
+          activityLevel: null,
+          goal: null,
+        });
+      } catch (err) {
+        console.warn("Cannot create initial profile:", err);
+      }
+
+      toast.success("Register Success!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      toast.warning("Server error occurred");
+    }
   };
 
   const loginUser = async (email: string, password: string) => {

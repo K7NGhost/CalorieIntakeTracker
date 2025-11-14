@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import BottomNav from "../../Components/BottomNav/BottomNav";
 
 type Props = {};
 
@@ -77,6 +78,7 @@ const BarcodeScanPage = (props: Props) => {
           </button>
         </div>
       </div>
+      <BottomNav></BottomNav>
     </div>
   );
 };

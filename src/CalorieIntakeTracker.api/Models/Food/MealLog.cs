@@ -1,27 +1,27 @@
 ﻿using CalorieIntakeTracker.api.Models.AI;
-using Supabase.Postgrest.Attributes;
-using Supabase.Postgrest.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CalorieIntakeTracker.api.Models.Food
 {
     [Table("meals")]
-    public class MealLog : BaseModel
+    public class MealLog
     {
+        [Key]
         public int Id { get; set; }
         public Guid  UserId { get; set; }
 
-        public DateTime LoggedAt { get; set; } = DateTime.UtcNow;
-        public string SourceType { get; set; } = "Manual";
+        [Required]
+        public string MealType { get; set; } = string.Empty; // e.g., breakfast, lunch, dinner
 
-        public string? ImageUrl { get; set; }
-        public string? Barcode { get; set; }
+        [Required]
+        public DateTime LoggedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<FoodItem> FoodItems { get; set; } = new List<FoodItem>();
         public double TotalCalories { get; set; }
         public double TotalProtein { get; set; }
         public double TotalCarbs { get; set; }
         public double TotalFat { get; set; }
-
-        public AIRecognitionResult? RecognitionResult { get; set; }
     }
 }

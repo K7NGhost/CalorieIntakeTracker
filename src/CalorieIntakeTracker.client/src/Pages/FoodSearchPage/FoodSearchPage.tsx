@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import BottomNav from "../../Components/BottomNav/BottomNav";
 
 type Props = {};
 
@@ -73,6 +74,7 @@ const FoodSearchPage = (props: Props) => {
           <p className="text-gray-400 text-center">No results found.</p>
         )}
       </div>
+      <BottomNav></BottomNav>
     </div>
   );
 };
