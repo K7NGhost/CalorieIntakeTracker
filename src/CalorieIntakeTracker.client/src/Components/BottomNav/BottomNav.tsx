@@ -32,7 +32,7 @@ const BottomNav: React.FC = () => {
           className="flex flex-col items-center text-gray-400 hover:text-orange-500 transition"
         >
           <Wrench className="w-6 h-6"></Wrench>
-          <span className="text-xs mt-1">Setup</span>
+          <span className="text-xs mt-1">Calorie Goals</span>
         </Link>
       </footer>
 

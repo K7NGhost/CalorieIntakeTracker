@@ -58,7 +58,9 @@ export const getCalorieBudget = async (): Promise<CalorieResultDto> => {
   try {
     const response = await axios.get(api + "calculate", {
       headers: getAuthHeaders(),
+      validateStatus: (status) => status < 400,
     });
+
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -70,4 +72,9 @@ export const getCalorieBudget = async (): Promise<CalorieResultDto> => {
     }
     throw new Error("Network error while calculating calorie budget");
   }
+};
+
+export const getProfile = async (): Promise<UserProfileDto> => {
+  const response = await axios.get<UserProfileDto>(api + "get");
+  return response.data;
 };

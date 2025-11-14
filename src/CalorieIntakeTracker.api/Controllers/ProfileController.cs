@@ -20,6 +20,38 @@ namespace CalorieIntakeTracker.api.Controllers
         }
 
         [Authorize]
+        [HttpGet("get")]
+        public async Task<ActionResult<UserProfileDto>> GetProfile()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+                return Unauthorized();
+
+            _logger.LogInformation($"Fetching profile for user: {userId}");
+
+            var result = await _supabase
+                .From<Profile>()
+                .Filter("id", Supabase.Postgrest.Constants.Operator.Equals, userId)
+                .Single();
+
+            if (result == null)
+                return NotFound("No profile found");
+
+            var dto = new UserProfileDto
+            {
+                Age = result.Age,
+                WeightLb = result.WeightLb,
+                HeightFt = result.HeightFt,
+                Sex = result.Sex,
+                ActivityLevel = result.ActivityLevel,
+                Goal = result.Goal
+            };
+
+            return Ok(dto);
+        }
+
+        [Authorize]
         [HttpPost("save")]
         public async Task<IActionResult> SaveProfile([FromBody] UserProfileDto dto)
         {
