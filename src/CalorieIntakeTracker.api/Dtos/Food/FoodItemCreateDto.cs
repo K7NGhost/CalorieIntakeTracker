@@ -4,7 +4,7 @@ namespace CalorieIntakeTracker.api.Dtos.Food
 {
     public class FoodItemCreateDto
     {
-        public string Name { get; set; } = string.Empty;
+        public string Food { get; set; } = string.Empty;
         public double ServingSizeGrams { get; set; }
 
         // Nutritional info
@@ -13,6 +13,5 @@ namespace CalorieIntakeTracker.api.Dtos.Food
         public double Carbs { get; set; }
         public double Fat { get; set; }
 
-        public string? DataSource { get; set; } = string.Empty;
     }
 }
