@@ -1,56 +1,63 @@
 import React from "react";
+import { Utensils, Clock } from "lucide-react";
 
-type Props = {};
+interface Food {
+  id: string;
+  name: string;
+  calories: number;
+  time: string;
+  category: string;
+}
 
-const FoodList = (props: Props) => {
-  const recentFoods = [
-    {
-      name: "Grilled Chicken Breast",
-      calories: 220,
-      protein: 35,
-      carbs: 0,
-      fat: 8,
-    },
-    {
-      name: "Oatmeal with Banana",
-      calories: 320,
-      protein: 9,
-      carbs: 55,
-      fat: 6,
-    },
-    { name: "Greek Yogurt", calories: 140, protein: 15, carbs: 10, fat: 4 },
-    { name: "Almonds (1 oz)", calories: 165, protein: 6, carbs: 5, fat: 14 },
-    {
-      name: "Salmon with Rice",
-      calories: 410,
-      protein: 38,
-      carbs: 25,
-      fat: 14,
-    },
-  ];
+interface FoodListProps {
+  foods?: Food[];
+}
+
+const FoodList: React.FC<FoodListProps> = ({ foods = [] }) => {
   return (
-    <div className="bg-gray-900 rounded-2xl p-6 shadow-lg w-full max-w-md">
-      <h2 className="text-xl font-semibold mb-4 text-gray-100">
-        Recently Added Foods
-      </h2>
+    <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6">
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-4">
+        <Utensils className="w-5 h-5 text-orange-500" />
+        <h2 className="text-xl font-semibold text-gray-100">Recent Foods</h2>
+      </div>
 
-      <ul className="divide-y divide-gray-700">
-        {recentFoods.map((food, index) => (
-          <li
-            key={index}
-            className="py-3 flex justify-between items-center hover:bg-gray-800 rounded-lg px-3 cursor-pointer transition"
-          >
-            <div>
-              <p className="font-medium text-gray-100">{food.name}</p>
-              <p className="text-sm text-gray-400">
-                {food.calories} kcal • P:{food.protein}g • C:{food.carbs}g • F:
-                {food.fat}g
-              </p>
+      {/* Food Items */}
+      <div className="space-y-3">
+        {foods.length > 0 ? (
+          foods.map((food) => (
+            <div
+              key={food.id}
+              className="flex items-center justify-between p-4 rounded-lg bg-neutral-800 hover:bg-gray-750 transition-all duration-200 group"
+            >
+              {/* Left section */}
+              <div className="flex-1">
+                <h4 className="font-medium text-gray-100 group-hover:text-orange-400 transition-colors">
+                  {food.name}
+                </h4>
+                <div className="flex items-center gap-3 mt-1 text-sm text-gray-400">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {food.time}
+                  </span>
+                  <span className="text-gray-600">•</span>
+                  <span>{food.category}</span>
+                </div>
+              </div>
+
+              {/* Right section */}
+              <div className="text-right">
+                <div className="text-lg font-bold text-orange-500">
+                  {food.calories}
+                </div>
+                <div className="text-xs text-gray-400">cal</div>
+              </div>
             </div>
-            <span className="text-gray-400 text-lg">›</span>
-          </li>
-        ))}
-      </ul>
+          ))
+        ) : (
+          <p className="text-gray-500 text-center">No foods logged yet.</p>
+        )}
+      </div>
     </div>
   );
 };
