@@ -29,24 +29,6 @@ export interface FoodItemUpdateDto {
   servingSize?: string;
 }
 
-export const getAllFoodItems = async (): Promise<FoodItem[]> => {
-  try {
-    const response = await axios.get(`${api}FoodItem`, {
-      headers: getAuthHeaders(),
-    });
-
-    return response.data;
-  } catch (error: any) {
-    if (error.response) {
-      console.error("Server error:", error.response.data);
-      throw new Error(
-        error.response.data.message || "Failed to fetch food items"
-      );
-    }
-    throw new Error("Network error while fetching food items");
-  }
-};
-
 export const getFoodItemById = async (id: number): Promise<FoodItem> => {
   try {
     const response = await axios.get(`${api}FoodItem/${id}`, {

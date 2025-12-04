@@ -1,7 +1,7 @@
 ﻿using CalorieIntakeTracker.api.Data;
 using CalorieIntakeTracker.api.Dtos.Food;
 using CalorieIntakeTracker.api.Models.Food;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +9,7 @@ namespace CalorieIntakeTracker.api.Controllers
 {
     [Route("api/users/{userId}/mealLogs")]
     [ApiController]
+    [Authorize]
     public class MealLogsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
