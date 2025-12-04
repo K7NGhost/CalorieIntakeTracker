@@ -19,6 +19,31 @@ const DashboardPage = (props: Props) => {
   );
   const [goalsLoading, setGoalsLoading] = useState(true);
 
+  const recalcMealTotals = (logs: MealLog[]) =>
+    logs.map((meal) => {
+      if (!meal.foodItems || meal.foodItems.length === 0) {
+        return meal;
+      }
+
+      const totals = meal.foodItems.reduce(
+        (acc, item) => ({
+          calories: acc.calories + item.calories,
+          protein: acc.protein + item.protein,
+          carbs: acc.carbs + item.carbs,
+          fat: acc.fat + item.fat,
+        }),
+        { calories: 0, protein: 0, carbs: 0, fat: 0 }
+      );
+
+      return {
+        ...meal,
+        totalCalories: totals.calories,
+        totalProtein: totals.protein,
+        totalCarbs: totals.carbs,
+        totalFat: totals.fat,
+      };
+    });
+
   // Load meal logs when component mounts
   useEffect(() => {
     if (user?.id) {
@@ -31,7 +56,7 @@ const DashboardPage = (props: Props) => {
     try {
       setLoading(true);
       const logs = await getAllMealLogs(user!.id);
-      setMealLogs(logs);
+      setMealLogs(recalcMealTotals(logs));
     } catch (error) {
       console.error("Failed to load meal logs:", error);
     } finally {
@@ -131,7 +156,7 @@ const DashboardPage = (props: Props) => {
                 <p className="text-gray-400 text-center">Loading meals...</p>
               </div>
             ) : (
-              <FoodList mealLogs={mealLogs} />
+              <FoodList mealLogs={mealLogs} onMealLogsChange={setMealLogs} />
             )}
           </div>
         </div>

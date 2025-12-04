@@ -64,6 +64,13 @@ const BottomNav: React.FC = () => {
               >
                 Scan Barcode
               </Link>
+              <Link
+                to="/manualAdd"
+                onClick={() => setShowDialog(false)}
+                className="bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 hover:border-orange-500 px-4 py-3 rounded-lg font-semibold text-gray-100 transition-all duration-300"
+              >
+                Manually Add Food
+              </Link>
             </div>
 
             <button

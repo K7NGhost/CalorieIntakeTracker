@@ -49,7 +49,7 @@ namespace CalorieIntakeTracker.api.Repository
             var existing = await _context.FoodItems.FindAsync(id);
             if (existing == null)
                 return null;
-
+            existing.Calories = foodDto.Calories;
             existing.ServingSizeGrams = foodDto.ServingSizeGrams;
             existing.Protein = foodDto.Protein;
             existing.Carbs = foodDto.Carbs;

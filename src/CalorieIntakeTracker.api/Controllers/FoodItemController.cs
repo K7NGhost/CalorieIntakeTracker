@@ -1,14 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Supabase;
-using CalorieIntakeTracker.api.Models.Food;
-using System.Security.Claims;
-using CalorieIntakeTracker.api.Dtos.Food;
-using CalorieIntakeTracker.api.Repository;
-using CalorieIntakeTracker.api.Mappers;
-using CalorieIntakeTracker.api.Interfaces;
 using CalorieIntakeTracker.api.Data;
+using CalorieIntakeTracker.api.Dtos.Food;
+using CalorieIntakeTracker.api.Interfaces;
+using CalorieIntakeTracker.api.Mappers;
+using CalorieIntakeTracker.api.Models.Food;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Supabase;
 
 namespace CalorieIntakeTracker.api.Controllers
 {
@@ -26,13 +24,6 @@ namespace CalorieIntakeTracker.api.Controllers
             _supabase = supabase;
             _foodRepo = foodRepo;
             _context = context;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<FoodItem>>> GetAll()
-        {
-            var items = await _foodRepo.GetAllAsync();
-            return Ok(items);
         }
 
         [HttpGet("{id}")]
@@ -89,6 +80,6 @@ namespace CalorieIntakeTracker.api.Controllers
 
             return NoContent();
         }
-            
+
     }
 }

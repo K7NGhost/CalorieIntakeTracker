@@ -1,13 +1,76 @@
 import { ChevronDown, ChevronUp, Clock, Utensils } from "lucide-react";
 import type { MealLog } from "../../api/MealLogsApi";
-import { useState } from "react";
+import type { FoodItem } from "../../Models/FoodItem";
+import { useEffect, useState, useCallback } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import EditWindow from "../EditWindow/EditWindow";
 
 interface FoodListProps {
   mealLogs?: MealLog[];
+  onMealLogsChange?: Dispatch<SetStateAction<MealLog[]>>;
 }
 
-const FoodList: React.FC<FoodListProps> = ({ mealLogs = [] }) => {
+const FoodList: React.FC<FoodListProps> = ({
+  mealLogs = [],
+  onMealLogsChange,
+}) => {
   const [expandedMeals, setExpandedMeals] = useState<Set<number>>(new Set());
+  const [displayedLogs, setDisplayedLogs] = useState<MealLog[]>(mealLogs);
+  const [editingState, setEditingState] = useState<{
+    mealId: number;
+    mealType: string;
+    loggedAt: string;
+    food: FoodItem;
+  } | null>(null);
+
+  useEffect(() => {
+    setDisplayedLogs(mealLogs);
+  }, [mealLogs]);
+
+  const updateDisplayedLogs = useCallback(
+    (updater: (prev: MealLog[]) => MealLog[]) => {
+      setDisplayedLogs((prev) => updater(prev));
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (onMealLogsChange) {
+      onMealLogsChange(displayedLogs);
+    }
+  }, [displayedLogs, onMealLogsChange]);
+
+  const recalcMeal = (meal: MealLog, items: FoodItem[]) => {
+    if (!items || items.length === 0) {
+      return {
+        ...meal,
+        foodItems: [],
+        totalCalories: 0,
+        totalProtein: 0,
+        totalCarbs: 0,
+        totalFat: 0,
+      };
+    }
+
+    const totals = items.reduce(
+      (acc, item) => ({
+        calories: acc.calories + item.calories,
+        protein: acc.protein + item.protein,
+        carbs: acc.carbs + item.carbs,
+        fat: acc.fat + item.fat,
+      }),
+      { calories: 0, protein: 0, carbs: 0, fat: 0 }
+    );
+
+    return {
+      ...meal,
+      foodItems: items,
+      totalCalories: totals.calories,
+      totalProtein: totals.protein,
+      totalCarbs: totals.carbs,
+      totalFat: totals.fat,
+    };
+  };
 
   const toggleMeal = (mealId: number) => {
     setExpandedMeals((prev) => {
@@ -21,6 +84,32 @@ const FoodList: React.FC<FoodListProps> = ({ mealLogs = [] }) => {
     });
   };
 
+  const handleFoodUpdated = (mealId: number, updatedFood: FoodItem) => {
+    updateDisplayedLogs((prev) =>
+      prev.map((meal) => {
+        if (meal.id !== mealId || !meal.foodItems) {
+          return meal;
+        }
+        const items = meal.foodItems.map((item) =>
+          item.id === updatedFood.id ? updatedFood : item
+        );
+        return recalcMeal(meal, items);
+      })
+    );
+  };
+
+  const handleFoodDeleted = (mealId: number, foodId: number) => {
+    updateDisplayedLogs((prev) =>
+      prev.map((meal) => {
+        if (meal.id !== mealId || !meal.foodItems) {
+          return meal;
+        }
+        const items = meal.foodItems.filter((item) => item.id !== foodId);
+        return recalcMeal(meal, items);
+      })
+    );
+  };
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString("en-US", {
@@ -29,6 +118,17 @@ const FoodList: React.FC<FoodListProps> = ({ mealLogs = [] }) => {
       hour12: true,
     });
   };
+
+  const openEdit = (meal: MealLog, food: FoodItem) => {
+    setEditingState({
+      mealId: meal.id,
+      mealType: meal.mealType,
+      loggedAt: meal.loggedAt,
+      food,
+    });
+  };
+
+  const closeEdit = () => setEditingState(null);
 
   return (
     <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6">
@@ -40,8 +140,8 @@ const FoodList: React.FC<FoodListProps> = ({ mealLogs = [] }) => {
 
       {/* Meal Logs */}
       <div className="space-y-3">
-        {mealLogs.length > 0 ? (
-          mealLogs.map((meal) => (
+        {displayedLogs.length > 0 ? (
+          displayedLogs.map((meal) => (
             <div
               key={meal.id}
               className="rounded-lg bg-neutral-800 overflow-hidden"
@@ -101,10 +201,10 @@ const FoodList: React.FC<FoodListProps> = ({ mealLogs = [] }) => {
                     {meal.foodItems.map((food) => (
                       <div
                         key={food.id}
-                        className="flex items-center justify-between p-3 rounded-lg bg-neutral-900 hover:bg-neutral-800 transition-colors"
+                        className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-lg bg-neutral-900 hover:bg-neutral-800 transition-colors"
                       >
                         {/* Food details */}
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-[180px]">
                           <p className="text-gray-200 font-medium">
                             {food.food}
                           </p>
@@ -119,11 +219,20 @@ const FoodList: React.FC<FoodListProps> = ({ mealLogs = [] }) => {
                         </div>
 
                         {/* Food calories */}
-                        <div className="text-right ml-4">
-                          <div className="text-base font-semibold text-orange-400">
-                            {food.calories}
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <div className="text-base font-semibold text-orange-400">
+                              {food.calories}
+                            </div>
+                            <div className="text-xs text-gray-500">cal</div>
                           </div>
-                          <div className="text-xs text-gray-500">cal</div>
+                          <button
+                            type="button"
+                            onClick={() => openEdit(meal, food)}
+                            className="px-3 py-1 rounded-full border border-orange-400/60 text-orange-300 text-xs font-semibold hover:bg-orange-500/10 transition-colors"
+                          >
+                            Edit
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -163,6 +272,23 @@ const FoodList: React.FC<FoodListProps> = ({ mealLogs = [] }) => {
           <p className="text-gray-500 text-center py-4">No meals logged yet.</p>
         )}
       </div>
+
+      <EditWindow
+        isOpen={Boolean(editingState)}
+        food={editingState?.food ?? null}
+        mealContext={
+          editingState
+            ? {
+                id: editingState.mealId,
+                name: editingState.mealType,
+                loggedAt: editingState.loggedAt,
+              }
+            : undefined
+        }
+        onClose={closeEdit}
+        onSaved={handleFoodUpdated}
+        onDeleted={handleFoodDeleted}
+      />
     </div>
   );
 };
